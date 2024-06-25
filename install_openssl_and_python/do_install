@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# Author: zergling-gmx
+
+# Check if the installation path parameter is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 <install_base_path>"
+    exit 1
+fi
+
+# Get the installation path parameter
+INSTALL_BASE_PATH=$1
+
+# Record the initial directory
+INITIAL_DIR=$(pwd)
+
+# Create the base installation directory
+mkdir -p "$INSTALL_BASE_PATH"
+
+# Create the archives directory
+ARCHIVES_PATH="$INSTALL_BASE_PATH/archives"
+mkdir -p "$ARCHIVES_PATH"
+
+# Function to handle extraction and relocation
+extract_and_relocate() {
+    local TAR_FILE=$1
+    local BASE_PATH=$2
+
+    # Extract the tar file
+    tar -xf $TAR_FILE -C $BASE_PATH
+
+    # Get the directory name
+    local DIR_NAME=$(tar -tf $TAR_FILE | head -1 | cut -f1 -d"/")
+
+    # Move to the directory
+    cd $BASE_PATH/$DIR_NAME
+
+    # Create an install directory and move contents
+    mkdir -p install
+    find . -maxdepth 1 -mindepth 1 -not -name install -exec mv {} install/ \;
+
+    # Move back to the base path
+    cd "$BASE_PATH"
+
+    echo $DIR_NAME
+}
+
+# Install OpenSSL
+cd "$ARCHIVES_PATH"
+
+# Download OpenSSL
+wget $TMP_CUR_OPENSSL_URL
+
+# Extract and relocate OpenSSL
+OPENSSL_TAR=$(basename $TMP_CUR_OPENSSL_URL)
+OPENSSL_DIR=$(extract_and_relocate $OPENSSL_TAR $INSTALL_BASE_PATH)
+
+# Configure and compile OpenSSL
+cd $INSTALL_BASE_PATH/$OPENSSL_DIR/install
+./config --prefix="$INSTALL_BASE_PATH/$OPENSSL_DIR"
+make
+make install
+
+# Return to the base installation directory
+cd "$ARCHIVES_PATH"
+
+# Install Python
+# Download Python
+wget $TMP_CUR_PYTHON_URL
+
+# Extract and relocate Python
+PYTHON_TAR=$(basename $TMP_CUR_PYTHON_URL)
+PYTHON_DIR=$(extract_and_relocate $PYTHON_TAR $INSTALL_BASE_PATH)
+
+# Configure and compile Python
+cd $INSTALL_BASE_PATH/$PYTHON_DIR/install
+./configure --prefix="$INSTALL_BASE_PATH/$PYTHON_DIR" \
+--enable-shared \
+--enable-optimizations \
+--enable-loadable-sqlite-extensions \
+--with-openssl="$INSTALL_BASE_PATH/$OPENSSL_DIR" \
+CPPFLAGS="-I$INSTALL_BASE_PATH/$OPENSSL_DIR/include" \
+CFLAGS="-I$INSTALL_BASE_PATH/$OPENSSL_DIR/include" \
+LDFLAGS="-L$INSTALL_BASE_PATH/$OPENSSL_DIR/lib64 -Wl,-rpath=$INSTALL_BASE_PATH/$OPENSSL_DIR/lib64"
+make
+make install
+
+# Return to the initial directory
+cd "$INITIAL_DIR"
+
+echo "OpenSSL installed successfully to $INSTALL_BASE_PATH/$OPENSSL_DIR"
+echo "Python installed successfully to $INSTALL_BASE_PATH/$PYTHON_DIR"
