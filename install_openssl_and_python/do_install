@@ -26,11 +26,13 @@ extract_and_relocate() {
     local TAR_FILE=$1
     local BASE_PATH=$2
 
-    # Extract the tar file
-    tar -xf $TAR_FILE -C $BASE_PATH
-
     # Get the directory name
     local DIR_NAME=$(tar -tf $TAR_FILE | head -1 | cut -f1 -d"/")
+
+    rm -rf $BASE_PATH/$DIR_NAME
+
+    # Extract the tar file
+    tar -xf $TAR_FILE -C $BASE_PATH
 
     # Move to the directory
     cd $BASE_PATH/$DIR_NAME
