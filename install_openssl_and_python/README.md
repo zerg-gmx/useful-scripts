@@ -2,6 +2,18 @@
 The scripts will altomatically download and install openssh and python. 
 
 The installed openssl is involved as a lib of the installed python. This helps solve the "No module named _ssl" problem.
+# Before installation
+remember to install base packages.
+e.g. for Debian series(debian, ubuntu, linux mint, etc.):
+```
+sudo apt-get install build-essential -y
+```
+for RHEL series(centos, rocky-linux, almalinux, etc.):
+```
+sudo yum groupinstall "Development Tools" -y
+sudo yum install -y cmake gcc-c++ kernel-devel
+```
+
 # How to use
 The openssl and python will be installed at the same base directory by typing:
 ```
