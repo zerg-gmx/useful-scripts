@@ -11,12 +11,6 @@ PREFIX=$1
 ARCHIVE_DIR="${PREFIX}/archives"
 NGINX_VERSION="1.21.6"
 
-# Update system packages
-sudo apt update && sudo apt upgrade -y
-
-# Install dependencies
-sudo apt install -y build-essential libpcre3-dev libssl-dev zlib1g-dev
-
 # Download Nginx source code (replace with latest version)
 wget http://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz
 
