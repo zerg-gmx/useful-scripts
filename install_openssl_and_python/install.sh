@@ -8,7 +8,7 @@ fi
 
 # The following two urls are for openssl and python. Change the download url if necessary.
 export TMP_CUR_OPENSSL_URL="https://github.com/openssl/openssl/releases/download/openssl-3.3.1/openssl-3.3.1.tar.gz"
-export TMP_CUR_PYTHON_URL="https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tgz"
+export TMP_CUR_PYTHON_URL="https://www.python.org/ftp/python/3.12.4/Python-3.12.4.tgz"
 
 
 chmod +x do_install
