@@ -1,5 +1,6 @@
 # What is this
 The scripts will altomatically download and install nginx.
+PCRE will also be installed as required.
 
 # Before installation
 remember to install base packages.
@@ -19,7 +20,8 @@ sh install.sh /path/u/wish/to/install
 ```
 which leaves:
 
-- ```/path/u/wish/to/install/nginx-1.21.6``` 
+- ```/path/u/wish/to/install/nginx-1.24.0``` 
+- ```/path/u/wish/to/install/pcre-8.45``` 
 by default.
 
-It would be nice to change the NGINX_VERSION in the ```install.sh``` in order to choose other versions according to certain preferences.
+It would be nice to change the NGINX_VERSION and PCRE_VERSION in the ```install.sh``` in order to choose other versions according to certain preferences.
