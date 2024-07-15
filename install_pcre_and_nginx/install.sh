@@ -57,7 +57,7 @@ mkdir install
 # Move files except 'install' directory
 find . -mindepth 1 -maxdepth 1 -not -name install -exec mv {} install/ \;
 cd install
-./configure --prefix="$INSTALL_DIR/pcre-$PCRE_VERSION/install"
+./configure --prefix="$INSTALL_DIR/pcre-$PCRE_VERSION"
 make
 make install
 
@@ -66,17 +66,15 @@ cd "$INSTALL_DIR/nginx-$NGINX_VERSION"
 mkdir install
 # Move files except 'install' directory
 find . -mindepth 1 -maxdepth 1 -not -name install -exec mv {} install/ \;
-
-# Ensure the install directory is clean before proceeding
-find install -mindepth 1 -exec rm -rf {} \;
-
 cd install
 
 # Configure NGINX with or without custom SSL path
 if [ -z "$SSL_PATH" ]; then
-    ./configure --prefix="$INSTALL_DIR/nginx-$NGINX_VERSION/install" --with-pcre="$INSTALL_DIR/pcre-$PCRE_VERSION/install"
+    # Notice here that we need pcre-$PCRE_VERSION/install  because nginx wants to read Makefile.
+    ./configure --prefix="$INSTALL_DIR/nginx-$NGINX_VERSION" --with-pcre="$INSTALL_DIR/pcre-$PCRE_VERSION"
 else
-    ./configure --prefix="$INSTALL_DIR/nginx-$NGINX_VERSION/install" --with-pcre="$INSTALL_DIR/pcre-$PCRE_VERSION/install" --with-openssl="$SSL_PATH"
+    # Notice here that we need pcre-$PCRE_VERSION/install  because nginx wants to read Makefile.
+    ./configure --prefix="$INSTALL_DIR/nginx-$NGINX_VERSION" --with-pcre="$INSTALL_DIR/pcre-$PCRE_VERSION/install" --with-openssl="$SSL_PATH"
 fi
 
 make
