@@ -6,7 +6,7 @@ PCRE will also be installed as required.
 remember to install base packages.
 e.g. for Debian series(debian, ubuntu, linux mint, etc.):
 ```
-sudo apt install -y build-essential libpcre3-dev libssl-dev zlib1g-dev
+sudo apt install -y build-essential  libssl-dev zlib1g-dev
 ```
 for RHEL series(centos, rocky-linux, almalinux, etc.):
 ```

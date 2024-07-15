@@ -1,13 +1,14 @@
 #!/bin/bash
 
-# Usage: sh install.sh /path/u/wish/to/install
+# Usage: sh install.sh /path/u/wish/to/install [path/to/ssl]
 
-if [ "$#" -ne 1 ]; then
-    echo "Usage: sh install.sh /path/u/wish/to/install"
+if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+    echo "Usage: sh install.sh /path/u/wish/to/install [path/to/ssl]"
     exit 1
 fi
 
 INSTALL_DIR=$1
+SSL_PATH=$2
 ARCHIVES_DIR="$INSTALL_DIR/archives"
 
 # Create necessary directories
@@ -65,8 +66,19 @@ cd "$INSTALL_DIR/nginx-$NGINX_VERSION"
 mkdir install
 # Move files except 'install' directory
 find . -mindepth 1 -maxdepth 1 -not -name install -exec mv {} install/ \;
+
+# Ensure the install directory is clean before proceeding
+find install -mindepth 1 -exec rm -rf {} \;
+
 cd install
-./configure --prefix="$INSTALL_DIR/nginx-$NGINX_VERSION/install" --with-pcre="$INSTALL_DIR/pcre-$PCRE_VERSION/install"
+
+# Configure NGINX with or without custom SSL path
+if [ -z "$SSL_PATH" ]; then
+    ./configure --prefix="$INSTALL_DIR/nginx-$NGINX_VERSION/install" --with-pcre="$INSTALL_DIR/pcre-$PCRE_VERSION/install"
+else
+    ./configure --prefix="$INSTALL_DIR/nginx-$NGINX_VERSION/install" --with-pcre="$INSTALL_DIR/pcre-$PCRE_VERSION/install" --with-openssl="$SSL_PATH"
+fi
+
 make
 make install
 
